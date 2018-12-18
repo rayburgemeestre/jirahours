@@ -19,7 +19,6 @@ var cfgFile string
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/jirahours.yaml)")
-	rootCmd.PersistentFlags().StringP("author", "a", "YOUR NAME", "Author name for copyright attribution")
 	rootCmd.PersistentFlags().Bool("viper", true, "Use Viper for configuration")
 }
 
