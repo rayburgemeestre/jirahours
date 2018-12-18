@@ -1,0 +1,30 @@
+ssh:
+  key: $HOME/.ssh/id_rsa
+repositories:
+  - "/home/ray/projects/cmdaemon"
+  - "/home/ray/projects/spark-archive"
+  - "/home/ray/projects/spark-docker-images"
+  - "/home/ray/projects/cmdaemon/cluster-tools"
+  - "/home/trigen/manuals"
+  - "/home/trigen/tools/jenkins-config"
+  - "/home/trigen/tools/functional-test"
+  - "/home/trigen/tools/test-images"
+  - "/home/trigen/tools/cm-jupyter"
+  - "/home/trigen/tools/cm-jupyterhub"
+  - "/home/trigen/tools/cm-jupyterhub-batchspawner"
+  - "/home/trigen/tools/autobuild-buildlists"
+  - "/home/trigen/tools/cm-kubernetes"
+  - "/home/trigen/tools/cm-etcd"
+  - "/home/trigen/tools/cm-spark"
+  - "/home/trigen/tools/cluster-on-demand"
+  - "/home/trigen/tools/caffe"
+  - "/home/trigen/autobuild2"
+regexes:
+  user: |
+    ^ray$|urgemeestre
+  commits: |
+    (?P<key>[A-Z]{2,5}-\d+) - (?P<message>.*)
+log_hours_per_day: 8
+jira_credentials:
+    username: ***CENSORED***
+    password: ***CENSORED***
