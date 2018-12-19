@@ -3,6 +3,14 @@
 - Compile yourself or copy `jirahours` into your path. (You can download it here: https://cppse.nl/jirahours)
 - Copy `example/jirahours.yaml` to `~/jirahours.yaml` and modify it.
 
+## Build
+
+- Make sure you have go installed. I.e. `apt install golang` on Ubuntu.
+- Checkout the source: `go get github.com/rayburgemeestre/jirahours` (Might take a while, pulls in also dependencies)
+- Move to the checkout directory: `cd $HOME/go/src/github.com/rayburgemeestre/jirahours` 
+- Run `go build` and you should have a `jirahours` in your current directory
+- Run `cp -prv jirahours ~/.bin/` or something similar, to get it into your path.
+
 ## Usage
 
 	trigen@zenbook:~/projects/jirahours[master]> jirahours 
