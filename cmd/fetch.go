@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/rayburgemeestre/jirahours/util"
 	"fmt"
+	"github.com/rayburgemeestre/jirahours/util"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"golang.org/x/crypto/ssh"
