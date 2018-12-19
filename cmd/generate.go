@@ -53,7 +53,7 @@ var generateCmd = &cobra.Command{
 
 		writeWorklogSubmitScript(worklogs)
 
-		fmt.Println("Generated",outputScript)
+		fmt.Println("Generated", outputScript)
 	},
 }
 

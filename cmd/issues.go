@@ -137,7 +137,7 @@ var issuesCmd = &cobra.Command{
 			}
 			f.Sync()
 		}
-		fmt.Println("Generated",output)
+		fmt.Println("Generated", output)
 	},
 }
 

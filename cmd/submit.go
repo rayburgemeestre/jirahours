@@ -71,8 +71,8 @@ var submitCmd = &cobra.Command{
 
 		jsonStr, _ := json.Marshal(pl)
 
-        //fmt.Println("Submitting:",string(jsonStr))
-        //os.Exit(0)
+		//fmt.Println("Submitting:",string(jsonStr))
+		//os.Exit(0)
 
 		url := fmt.Sprintf(viper.GetString("jira_worklog_url"), jiraKey)
 
@@ -90,7 +90,7 @@ var submitCmd = &cobra.Command{
 			util.CheckIfError(err)
 		}()
 
-        fmt.Println("Submitted to Jira:", string(jsonStr), "Response:", resp.Status)
+		fmt.Println("Submitted to Jira:", string(jsonStr), "Response:", resp.Status)
 
 		//fmt.Println("Response Status:", resp.Status)
 		//fmt.Println("Response Headers:", resp.Header)
