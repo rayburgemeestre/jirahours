@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
@@ -35,10 +34,10 @@ var submitCmd = &cobra.Command{
 	Long:  `Submit hours to jira based on credentials specified in your config.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// TODO: No input checking
-		fmt.Println("submit date:", submitDate)
-		fmt.Println("worklog:", worklog)
-		fmt.Println("jira key:", jiraKey)
-		fmt.Println("message:", message)
+		//fmt.Println("submit date:", submitDate)
+		//fmt.Println("worklog:", worklog)
+		//fmt.Println("jira key:", jiraKey)
+		//fmt.Println("message:", message)
 
 		// Transform for Tempo hours
 		submitDate = fmt.Sprintf("%sT11:11:11.111+0200", submitDate)
@@ -48,7 +47,7 @@ var submitCmd = &cobra.Command{
 		}
 		hours, err := strconv.Atoi(f[0])
 		util.CheckIfError(err)
-		minutes, err := strconv.Atoi(f[0])
+		minutes, err := strconv.Atoi(f[1])
 		util.CheckIfError(err)
 		minutes -= (minutes % 15)
 
@@ -61,19 +60,19 @@ var submitCmd = &cobra.Command{
 		}
 
 		pl := &Payload{tss, submitDate, message}
-		fmt.Println(pl)
 
-		fmt.Println("started:", submitDate)
-		fmt.Println("timeSpentSeconds:", tss)
-		fmt.Println("issue:", jiraKey)
-		fmt.Println("comment:", message)
+		//fmt.Println("started:", submitDate)
+		//fmt.Println("timeSpentSeconds:", tss)
+		//fmt.Println("issue:", jiraKey)
+		//fmt.Println("comment:", message)
 
 		username := viper.GetString("jira_credentials.username")
 		password := viper.GetString("jira_credentials.password")
 
-		fmt.Println(username, password)
-
 		jsonStr, _ := json.Marshal(pl)
+
+        //fmt.Println("Submitting:",string(jsonStr))
+        //os.Exit(0)
 
 		url := fmt.Sprintf("https://jira.brightcomputing.com:8443/rest/api/latest/issue/%s/worklog", jiraKey)
 
@@ -91,9 +90,11 @@ var submitCmd = &cobra.Command{
 			util.CheckIfError(err)
 		}()
 
-		fmt.Println("response Status:", resp.Status)
-		fmt.Println("response Headers:", resp.Header)
-		body, _ := ioutil.ReadAll(resp.Body)
-		fmt.Println("response Body:", string(body))
+        fmt.Println("Submitted to Jira:", string(jsonStr), "Response:", resp.Status)
+
+		//fmt.Println("Response Status:", resp.Status)
+		//fmt.Println("Response Headers:", resp.Header)
+		//body, _ := ioutil.ReadAll(resp.Body)
+		//fmt.Println("Response Body:", string(body))
 	},
 }

@@ -122,9 +122,9 @@ var issuesCmd = &cobra.Command{
 			return issuesAll[i].t.Before(issuesAll[j].t.Local())
 		})
 
-		for _, issue := range issuesAll {
-			fmt.Print(issue.t.String(), " ", issue.jirakey, " ", issue.message, " [", issue.repo, "]", "\n")
-		}
+		//for _, issue := range issuesAll {
+		//	fmt.Print(issue.t.String(), " ", issue.jirakey, " ", issue.message, " [", issue.repo, "]", "\n")
+		//}
 
 		{
 			f, err := os.Create(output)
@@ -132,12 +132,12 @@ var issuesCmd = &cobra.Command{
 			defer f.Close()
 
 			for _, issue := range issuesAll {
-				n, err := f.WriteString(fmt.Sprintln(issue.t.String(), "***", issue.jirakey, "***", issue.message, "***", issue.repo))
-				fmt.Println("Written", n, "bytes")
+				_, err := f.WriteString(fmt.Sprintln(issue.t.String(), "***", issue.jirakey, "***", issue.message, "***", issue.repo))
 				util.CheckIfError(err)
 			}
 			f.Sync()
 		}
+		fmt.Println("Generated",output)
 	},
 }
 

@@ -52,6 +52,8 @@ var generateCmd = &cobra.Command{
 		worklogs := generateWorklogs(datesAll, issuesAll)
 
 		writeWorklogSubmitScript(worklogs)
+
+		fmt.Println("Generated",outputScript)
 	},
 }
 
@@ -63,15 +65,15 @@ func writeWorklogSubmitScript(worklogs [][]DateLogs) {
 		util.CheckIfError(err)
 	}()
 	for _, worklog := range worklogs {
-		n, err := f.WriteString("\n")
+		_, err := f.WriteString("\n")
 		util.CheckIfError(err)
-		fmt.Println("Written", n, "bytes")
+		//fmt.Println("Written", n, "bytes")
 
 		for i := 0; i < len(worklog); i++ {
 			log := worklog[i]
 			log.key = strings.Trim(log.key, " ")
 			log.msg = strings.Trim(log.msg, " ")
-			n, err := f.WriteString(
+			_, err := f.WriteString(
 				fmt.Sprintf(`jirahours submit -s "%04d-%02d-%02d" -w "%s" -j "%s" -m "%s"%c`,
 					log.date.Year(),
 					log.date.Month(),
@@ -81,7 +83,7 @@ func writeWorklogSubmitScript(worklogs [][]DateLogs) {
 					log.msg,
 					'\n',
 				))
-			fmt.Println("Written", n, "bytes")
+			//fmt.Println("Written", n, "bytes")
 			util.CheckIfError(err)
 		}
 	}
