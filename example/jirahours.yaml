@@ -28,3 +28,4 @@ log_hours_per_day: 8
 jira_credentials:
     username: ***CENSORED***
     password: ***CENSORED***
+jira_worklog_url: "https://<YOUR JIRA>/rest/api/latest/issue/%s/worklog"

@@ -74,7 +74,7 @@ var submitCmd = &cobra.Command{
         //fmt.Println("Submitting:",string(jsonStr))
         //os.Exit(0)
 
-		url := fmt.Sprintf("https://jira.brightcomputing.com:8443/rest/api/latest/issue/%s/worklog", jiraKey)
+		url := fmt.Sprintf(viper.GetString("jira_worklog_url"), jiraKey)
 
 		req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 		req.SetBasicAuth(username, password)
