@@ -98,14 +98,20 @@ var issuesCmd = &cobra.Command{
 		channel = make(chan EntrySet)
 		wg = sync.WaitGroup{}
 
+		seen := map[string]bool{}
+
 		wg.Add(1)
 		go func() {
 			for range repos {
 				msg1 := <-channel
 				fmt.Println("Received", len(msg1.entries), "from repo", msg1.repo)
 				if len(msg1.entries) > 0 {
-					for _, i := range msg1.entries {
-						issuesAll = append(issuesAll, i)
+					for _, m := range msg1.entries {
+						if _, seen := seen[m.message]; seen {
+							continue
+						}
+						seen[m.message] = true
+						issuesAll = append(issuesAll, m)
 					}
 				}
 			}
@@ -121,10 +127,6 @@ var issuesCmd = &cobra.Command{
 		sort.Slice(issuesAll, func(i, j int) bool {
 			return issuesAll[i].t.Before(issuesAll[j].t.Local())
 		})
-
-		//for _, issue := range issuesAll {
-		//	fmt.Print(issue.t.String(), " ", issue.jirakey, " ", issue.message, " [", issue.repo, "]", "\n")
-		//}
 
 		{
 			f, err := os.Create(output)
@@ -143,6 +145,9 @@ var issuesCmd = &cobra.Command{
 
 func process(path string, from time.Time, until time.Time) {
 	r, err := git.PlainOpen(path)
+	if err != nil {
+		fmt.Println("Error with repository:", path)
+	}
 	util.CheckIfError(err)
 
 	ref, err := r.Head()
@@ -163,7 +168,6 @@ func process(path string, from time.Time, until time.Time) {
 	c = strings.TrimRight(c, "\n\r \t")
 	reCommit := regexp.MustCompile(c)
 
-	seen := map[string]bool{}
 	err = cIter.ForEach(func(c *object.Commit) error {
 		if reUser.MatchString(c.Author.Name) {
 			if c.Author.When.After(from) && c.Author.When.Before(until) {
@@ -179,10 +183,6 @@ func process(path string, from time.Time, until time.Time) {
 							result[name] = match[i]
 						}
 					}
-					if _, seen := seen[result["message"]]; seen {
-						continue
-					}
-					seen[result["message"]] = true
 					e := Entry{
 						t:       c.Author.When.Local(),
 						jirakey: result["key"],
