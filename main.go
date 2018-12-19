@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./cmd"
+	"github.com/rayburgemeestre/jirahours/cmd"
 )
 
 func main() {

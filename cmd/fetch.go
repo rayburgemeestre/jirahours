@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"../util"
+	"github.com/rayburgemeestre/jirahours/util"
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
