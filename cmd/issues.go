@@ -1,18 +1,15 @@
 package cmd
 
 import (
-	"bufio"
 	"fmt"
 	"github.com/rayburgemeestre/jirahours/util"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
-	"log"
 	"os"
 	"regexp"
 	"sort"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -48,48 +45,8 @@ var issuesCmd = &cobra.Command{
 	Short: "Read in a dates file and gather all relevant git commit messages for the min and max date found in this file.",
 	Long:  `This will write the result to an output file so it can be manually edited before proceding to the generate step.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		file, err := os.Open(dates)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer file.Close()
-		var datesAll []time.Time
-		scanner := bufio.NewScanner(file)
-		min := time.Date(3000, 0, 0, 0, 0, 0, 0, time.Local)
-		max := time.Date(1000, 0, 0, 0, 0, 0, 0, time.Local)
-		for scanner.Scan() {
-			line := scanner.Text()
-			commented := false
-			if strings.Contains(line, ";") {
-				commented = true
-				line = strings.TrimSpace(line[1:])
-			}
-			if commented {
 
-			}
-			fields := strings.Split(line, "-")
-			if len(fields) < 3 {
-				fmt.Println(fields)
-				panic("Not enough fields on line found")
-			}
-			year, err := strconv.Atoi(fields[0])
-			util.CheckIfError(err)
-			month, err := strconv.Atoi(fields[1])
-			util.CheckIfError(err)
-			day, err := strconv.Atoi(fields[2])
-			util.CheckIfError(err)
-
-			var t time.Time
-			if t = time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.Local); t.Before(min) {
-				min = t
-			}
-			if t := time.Date(year, time.Month(month), day+1, 0, 0, 0, 0, time.Local); t.After(max) {
-				max = t
-			}
-			if !commented {
-				datesAll = append(datesAll, t)
-			}
-		}
+		min, max := util.GetMinMaxDatefile(dates)
 
 		repos := viper.GetStringSlice("repositories")
 		fmt.Println("Reading", len(repos), "repositories.")

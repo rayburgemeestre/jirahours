@@ -14,8 +14,9 @@ import (
 )
 
 var (
-	issues       string
-	outputScript string
+	issues           string
+	outputScript     string
+	existingWorklogs string
 )
 
 type DateLogs struct {
@@ -36,6 +37,7 @@ func init() {
 	generateCmd.Flags().StringVarP(&dates, "file", "f", "dates.txt", "file to read dates from (e.g. dates.txt)")
 	generateCmd.Flags().StringVarP(&issues, "in", "i", "issues.txt", "file to read commit entries from (e.g. issues.txt)")
 	generateCmd.Flags().StringVarP(&outputScript, "out", "o", "submit_hours.sh", "file to write bash script (e.g. submit_hours.sh)")
+	generateCmd.Flags().StringVarP(&existingWorklogs, "wl", "e", "existing_tempo_hours.txt", "file to read for existing worklogs (e.g. existing_tempo_hours.txt)")
 	rootCmd.AddCommand(generateCmd)
 }
 
@@ -49,7 +51,9 @@ var generateCmd = &cobra.Command{
 
 		issuesAll := readIssues(issues)
 
-		worklogs := generateWorklogs(datesAll, issuesAll)
+		existingWorklogsAll := readExistingWorklogs(existingWorklogs)
+
+		worklogs := generateWorklogs(datesAll, issuesAll, existingWorklogsAll)
 
 		writeWorklogSubmitScript(worklogs)
 
@@ -89,20 +93,49 @@ func writeWorklogSubmitScript(worklogs [][]DateLogs) {
 	}
 }
 
-func generateWorklogs(datesAll []time.Time, issuesAll []Issue) (worklogs [][]DateLogs) {
+type Index struct {
+	year  int
+	month time.Month
+	day   int
+}
+
+func generateWorklogs(datesAll []time.Time, issuesAll []Issue, existingWorklogsAll []Worklog) (worklogs [][]DateLogs) {
 	worklogs = [][]DateLogs{}
 
 	totalMinutes := len(datesAll) * viper.GetInt("log_hours_per_day") * 60
+
+	// create faster lookup table
+	mapping := map[Index]int{}
+	for _, existing := range existingWorklogsAll {
+		i := Index{existing.date.Year(), existing.date.Month(), existing.date.Day()}
+		mapping[i] += existing.timeSpentSeconds
+	}
+
+	// generate total *without* previously logged stuff (usually meetings, etc.)
+	totalMinutesWithoutMeetings := totalMinutes
+	for i := 0; i < len(datesAll); i++ {
+		date := datesAll[i]
+		lookup := Index{date.Year(), date.Month(), date.Day()}
+		if _, exists := mapping[lookup]; exists {
+			totalMinutesWithoutMeetings -= mapping[lookup] / 60
+		}
+	}
+
 	totalIssues := len(issuesAll)
-	minutesPerIssue := totalMinutes / totalIssues
+	minutesPerIssue := totalMinutesWithoutMeetings / totalIssues
 	currentIssueMinutes := minutesPerIssue
 	issueIndex := 0
 
 	for i := 0; i < len(datesAll); i++ {
 		date := datesAll[i]
-		logsForDate := []DateLogs{}
+		var logsForDate []DateLogs
 		logged := 0
 		logPerDay := viper.GetInt("log_hours_per_day") * 60
+
+		lookup := Index{date.Year(), date.Month(), date.Day()}
+		if _, exists := mapping[lookup]; exists {
+			logPerDay -= mapping[lookup] / 60
+		}
 
 		for toLog := logPerDay; toLog > 0; {
 			if issueIndex >= len(issuesAll) {
@@ -147,13 +180,13 @@ func generateWorklogs(datesAll []time.Time, issuesAll []Issue) (worklogs [][]Dat
 		// jira seems to round to 15 minute blocks, so most of the time,
 		//  logs don't add up to exactly 8 hours.. so we do a second pass fixing that
 		totalMinutes = 0
-		newLogsForDate := []DateLogs{}
+		var newLogsForDate []DateLogs
 		for i := 0; i < len(logsForDate); i++ {
 			log := logsForDate[i]
-			time := strings.Split(log.hours, ":")
-			h, err := strconv.Atoi(time[0])
+			times := strings.Split(log.hours, ":")
+			h, err := strconv.Atoi(times[0])
 			util.CheckIfError(err)
-			m, err := strconv.Atoi(time[1])
+			m, err := strconv.Atoi(times[1])
 			util.CheckIfError(err)
 			minutesRounded := int(math.Round((float64(h*60.0)+float64(m))/15.0) * 15)
 			totalMinutes += minutesRounded
@@ -245,5 +278,49 @@ func logTime(issue Issue, minutes int) (hours string, key string, msg string) {
 	hours = minutesToHours(minutes)
 	msg = strings.Replace(issue.msg, "\"", "'", -1)
 	key = issue.key
+	return
+}
+
+type Worklog struct {
+	date             time.Time
+	author           string
+	timeSpentSeconds int
+	msg              string
+}
+
+func readExistingWorklogs(filename string) (worklogs []Worklog) {
+	file, err := os.Open(filename)
+	util.CheckIfError(err)
+	defer func() {
+		err := file.Close()
+		util.CheckIfError(err)
+	}()
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		fields := strings.Split(line, "***")
+		if len(fields) != 4 {
+			panic("There should be four fields.")
+		}
+
+		f := strings.Split(fields[0][0:10], "-")
+		y, err := strconv.Atoi(f[0])
+		util.CheckIfError(err)
+		m, err := strconv.Atoi(f[1])
+		util.CheckIfError(err)
+		d, err := strconv.Atoi(f[2])
+		util.CheckIfError(err)
+
+		fields[2] = strings.TrimSpace(fields[2])
+		tss, err := strconv.Atoi(fields[2])
+		util.CheckIfError(err)
+
+		worklogs = append(worklogs, Worklog{
+			date:             time.Date(y, time.Month(m), d, 0, 0, 0, 0, time.Local),
+			author:           fields[1],
+			timeSpentSeconds: tss,
+			msg:              fields[3],
+		})
+	}
 	return
 }

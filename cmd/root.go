@@ -11,7 +11,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "jirahours",
 	Short: "jirahours",
-	Long:  `jirahours - whatever`,
+	Long:  `jirahours - because logging hours in jira is boring`,
 }
 
 var cfgFile string
@@ -19,7 +19,6 @@ var cfgFile string
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/jirahours.yaml)")
-	rootCmd.PersistentFlags().Bool("viper", true, "Use Viper for configuration")
 }
 
 func Execute() {
@@ -30,9 +29,7 @@ func Execute() {
 }
 
 func initConfig() {
-	// Don't forget to read config either from cfgFile or from home directory!
 	if cfgFile != "" {
-		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 		fmt.Println("Specified config file:", cfgFile)
 	} else {
@@ -42,14 +39,12 @@ func initConfig() {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-
-		// Search config in home directory with name ".cobra" (without extension).
 		viper.AddConfigPath(home)
 		viper.SetConfigName("jirahours")
 	}
-
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Println("Can't read config:", err)
 		os.Exit(1)
 	}
+	viper.WriteConfig()
 }

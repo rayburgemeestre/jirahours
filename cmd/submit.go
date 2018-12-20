@@ -33,13 +33,6 @@ var submitCmd = &cobra.Command{
 	Short: "Submit hours to jira based on credentials specified in your config.",
 	Long:  `Submit hours to jira based on credentials specified in your config.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// TODO: No input checking
-		//fmt.Println("submit date:", submitDate)
-		//fmt.Println("worklog:", worklog)
-		//fmt.Println("jira key:", jiraKey)
-		//fmt.Println("message:", message)
-
-		// Transform for Tempo hours
 		submitDate = fmt.Sprintf("%sT11:11:11.111+0200", submitDate)
 		f := strings.Split(worklog, ":")
 		if len(f) != 2 {
@@ -61,21 +54,12 @@ var submitCmd = &cobra.Command{
 
 		pl := &Payload{tss, submitDate, message}
 
-		//fmt.Println("started:", submitDate)
-		//fmt.Println("timeSpentSeconds:", tss)
-		//fmt.Println("issue:", jiraKey)
-		//fmt.Println("comment:", message)
-
 		username := viper.GetString("jira_credentials.username")
 		password := viper.GetString("jira_credentials.password")
 
 		jsonStr, _ := json.Marshal(pl)
 
-		//fmt.Println("Submitting:",string(jsonStr))
-		//os.Exit(0)
-
-		url := fmt.Sprintf(viper.GetString("jira_worklog_url"), jiraKey)
-
+		url := fmt.Sprintf(viper.GetString("jira_worklog_api.issue"), jiraKey)
 		req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 		req.SetBasicAuth(username, password)
 		req.Header.Set("Content-Type", "application/json")
@@ -91,10 +75,5 @@ var submitCmd = &cobra.Command{
 		}()
 
 		fmt.Println("Submitted to Jira:", string(jsonStr), "Response:", resp.Status)
-
-		//fmt.Println("Response Status:", resp.Status)
-		//fmt.Println("Response Headers:", resp.Header)
-		//body, _ := ioutil.ReadAll(resp.Body)
-		//fmt.Println("Response Body:", string(body))
 	},
 }
