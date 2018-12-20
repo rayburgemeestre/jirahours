@@ -14,25 +14,25 @@
 ## Usage
 
 	trigen@zenbook:~/projects/jirahours[master]> jirahours 
-	jirahours - whatever
+    jirahours - because logging hours in jira is boring
 
-	Usage:
-	  jirahours [command]
+    Usage:
+      jirahours [command]
 
-	Available Commands:
-	  fetch       Fetch all remotes on all repositories
-	  generate    Generate a bash script to submit jira hours
-	  help        Help about any command
-	  issues      Read in a dates file and gather all relevant git commit messages for the min and max date found in this file.
-	  submit      Submit hours to jira based on credentials specified in your config.
-	  version     Print the version number of jirahours
+    Available Commands:
+      fetch       Fetch all remotes on all repositories
+      generate    Generate a bash script to submit jira hours
+      help        Help about any command
+      issues      Read in a dates file and gather all relevant git commit messages for the min and max date found in this file.
+      submit      Submit hours to jira based on credentials specified in your config.
+      syncback    Sync back already existing worklogs for given date range from Jira Tempo hours
+      version     Print the version number of jirahours
 
-	Flags:
-		  --config string   config file (default is $HOME/jirahours.yaml)
-	  -h, --help            help for jirahours
-		  --viper           Use Viper for configuration (default true)
+    Flags:
+          --config string   config file (default is $HOME/jirahours.yaml)
+      -h, --help            help for jirahours
 
-	Use "jirahours [command] --help" for more information about a command.
+    Use "jirahours [command] --help" for more information about a command.
 
 ## Example
 
@@ -55,7 +55,8 @@ Edit in your current directory a file named `dates.txt`, for example:
 These dates will be the days that you have worked and you wish to generate jira hours for (later)
 
 - `jirahours issues` produces an `issues.txt` with all commits from repositories you specified in your config that go from the min- and max dates in this `dates.txt`.
-- `jirahours generate` produces an `submit_hours.sh` script you can invoke to submit the Tempo hours to Jira. This will read `issues.txt` and `dates.txt` to construct this script.
+- `jirahours syncback` produces an `existing_tempo_hours.txt` with all existing worklog entries already in Tempo, typically meetings etc. 
+- `jirahours generate` produces an `submit_hours.sh` script you can invoke to submit the Tempo hours to Jira. This will read `issues.txt`, `dates.txt` and `existing_tempo_hours.txt` to construct a script.
 
 Each step you can manually inspect and change stuff. For example `issues.txt` might need some polishing before doing the `generate` step,
  or `submit_hours.sh` needs to be double checked until you are confident enough to run the bash script.
@@ -106,6 +107,8 @@ but since it will be rounded to 15 minutes you will log way too much stuff: 15 m
 
 The other way around should be accounted for, I just discovered this edge case, so I feel like writing it down, might fix it later.
 For now I want to catch some sleep!
+
+TODO: I will soon check if we can get rid of this 15 minute constraint.. if it's not possible I'll create a workaround for the above bug.
 
 ## DISCLAIMER
 

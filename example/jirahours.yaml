@@ -1,9 +1,10 @@
 ssh:
   key: $HOME/.ssh/id_rsa
 repositories:
-  - "/home/foo/project1"
-  - "/home/foo/project2"
-  - "/home/foo/project3"
+# Don't use trailing slashes
+  - /home/foo/project1
+  - /home/foo/project2
+  - /home/foo/project3
 regexes:
   user: |
     ^ray$|Burgemeestre
@@ -17,4 +18,7 @@ log_hours_per_day: 8
 jira_credentials:
     username: <YOUR USERNAME>
     password: <YOUR PASSWORD>
-jira_worklog_url: "https://<YOUR JIRA>/rest/api/latest/issue/%s/worklog"
+jira_worklog_api:
+  issue: https://<YOUR JIRA>/rest/api/latest/issue/%s/worklog
+  list: https://<YOUR JIRA>/rest/api/2/worklog/updated?since=%d
+  detail: https://<YOUR JIRA>/rest/api/2/worklog/list
