@@ -91,7 +91,7 @@ The semi-colon "comments" out the date, but it will be used when fetching the is
 
 ## Other commands
 
-- `jirahours fetch` to `git fetch --all` on each repository.
+- `jirahours fetch` to invoke `git fetch --all` on each repository. This can be useful in case you made changes on a different machine, to make your local copies aware of the commits.
 
 ## Why?
 
@@ -113,4 +113,12 @@ TODO: I will soon check if we can get rid of this 15 minute constraint.. if it's
 ## DISCLAIMER
 
 The code is still a bit messy, hopefully I will get around to refactoring it a little bit.
+
+## LICENSE
+
+    This Source Code Form is subject to the terms of the Mozilla Public                                                                  
+    License, v. 2.0. If a copy of the MPL was not distributed with this                                                                  
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.                                                                             
+  
+See LICENSE file for the complete text.
 
