@@ -33,17 +33,17 @@ var fetchCmd = &cobra.Command{
 
 		// Running fetch concurrently apparently is not a good idea:
 		// ...
-		// ERROR IN: /home/ray/projects/cmdaemon/cluster-tools reference has changed concurrently
+		// ERROR IN: /home/ray/projects/some-repo reference has changed concurrently
 		// error: reference has changed concurrently
 		// exit status 1
 		//
 		// It seems able to corrupt repositories:
 		// bash$ git fetch upstream
-		// error: cannot lock ref 'refs/remotes/upstream/8.0': unable to resolve reference 'refs/remotes/upstream/8.0': reference broken
-		// From ssh://bitbucket.brightcomputing.com:7999/cm/cluster-tools
-		// ! [new branch]          8.0        -> upstream/8.0  (unable to update local ref)
-		// error: cannot lock ref 'refs/remotes/upstream/8.2': unable to resolve reference 'refs/remotes/upstream/8.2': reference broken
-		// ! [new branch]          8.2        -> upstream/8.2  (unable to update local ref)
+		// error: cannot lock ref 'refs/remotes/upstream/1.0': unable to resolve reference 'refs/remotes/upstream/1.0': reference broken
+		// From ssh://<CENSORED>/some-repo
+		// ! [new branch]          1.0        -> upstream/1.0  (unable to update local ref)
+		// error: cannot lock ref 'refs/remotes/upstream/1.1': unable to resolve reference 'refs/remotes/upstream/1.1': reference broken
+		// ! [new branch]          1.1        -> upstream/1.1  (unable to update local ref)
 		//
 		// I screwed up a few repositories this way so I'm pretty sure there are races when you do "writes" to different
 		// repositories in concurrently running go routines.
