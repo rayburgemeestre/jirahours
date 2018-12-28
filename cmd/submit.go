@@ -46,8 +46,6 @@ var submitCmd = &cobra.Command{
 		util.CheckIfError(err)
 		minutes, err := strconv.Atoi(f[1])
 		util.CheckIfError(err)
-		minutes -= (minutes % 15)
-
 		tss := (hours * 60 * 60) + minutes*60
 
 		type Payload struct {

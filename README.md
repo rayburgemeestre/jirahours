@@ -98,18 +98,6 @@ The semi-colon "comments" out the date, but it will be used when fetching the is
 Well this project was just an excuse to get better at golang, since I already had this above logic in some bash scripts writing it was pretty easy.
 The advantage is that the logic seems to be stable, I've been using this for quite a while.
 
-## Known issues
-
-Tempo hours doesn't support chunks smaller than 15 minutes, so there are some tricks to make stuff work.
-There is only one edge case if you want to log 8 hours of work. But you give an input of > 32 issues per day.
-For example if you try 60 issues, that is: (8.0 * 60 minutes) / 60 issues = 8 minutes per issue,
-but since it will be rounded to 15 minutes you will log way too much stuff: 15 minutes * 60 issues.
-
-The other way around should be accounted for, I just discovered this edge case, so I feel like writing it down, might fix it later.
-For now I want to catch some sleep!
-
-TODO: I will soon check if we can get rid of this 15 minute constraint.. if it's not possible I'll create a workaround for the above bug.
-
 ## DISCLAIMER
 
 The code is still a bit messy, hopefully I will get around to refactoring it a little bit.

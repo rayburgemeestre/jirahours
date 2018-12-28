@@ -192,7 +192,7 @@ func generateWorklogs(datesAll []time.Time, issuesAll []Issue, existingWorklogsA
 			util.CheckIfError(err)
 			m, err := strconv.Atoi(times[1])
 			util.CheckIfError(err)
-			minutesRounded := int(math.Round((float64(h*60.0)+float64(m))/15.0) * 15)
+			minutesRounded := int(math.Round(float64(h*60.0)+float64(m)))
 			totalMinutes += minutesRounded
 			log.hourminute = minutesToHours(minutesRounded)
 			log.minutes = minutesRounded
