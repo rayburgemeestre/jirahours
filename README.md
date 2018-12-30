@@ -1,7 +1,11 @@
 ## Install
 
-- Compile yourself or copy `jirahours` into your path. (You can download it here: https://cppse.nl/jirahours)
+- Compile yourself or copy `jirahours` into your path. The binary can be downloaded via: https://github.com/rayburgemeestre/jirahours/releases
 - Copy `example/jirahours.yaml` to `~/jirahours.yaml` and modify it.
+
+The binary in the releases has been compiled via Travis CI, you can find the corresponding jobs here:
+
+[![Build Status](https://travis-ci.org/rayburgemeestre/jirahours.svg?branch=master)](https://travis-ci.org/rayburgemeestre/jirahours) [![MPL 2.0 License](https://img.shields.io/badge/license-MPL2.0-blue.svg)](http://veldstra.org/2016/12/09/you-should-choose-mpl2-for-your-opensource-project.html)
 
 ## Build
 
