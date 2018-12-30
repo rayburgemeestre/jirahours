@@ -1,7 +1,11 @@
 language: go
 
 go:
-- master
+- "1.11.x"
+
+install:
+- go get -u github.com/golang/dep/...
+- dep ensure
 
 deploy:
   provider: releases
