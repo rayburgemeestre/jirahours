@@ -9,6 +9,7 @@ deploy:
   api_key:
     secure: R2JO5MCISYxC7UjTXglC2R4iBNHropVPckzYef0GVVE2laCKxPo19jJf6hnrE7JfTUrQXfTUpaH4+LwRE27jkkqmvwTkX/opp580aCJoX/hVSAqZp1bU8/YiPUgu5yJZjD8HBJYxd6XrZBKWNQsoo5GCFbaPkuUNgCjTfYryte/DHkqKrw1OAOGJNaOnMvS1KQ1FmtDW/K/7O6xu+8anLJtqQWpZfomU/2BFnXZJkLIqqGQoYziiylc3fZT//9e3Kh8iR4SDog4NvtpXSB64jqWfn8nzUtMST8AWuU/YbHMapnHX6jCkHBCFV3MnOy8+qBYLbSbic71V11/N4kcxVR19gdiSghyPfxmsInAC3/0/Ty3Dc3h1XKPXCciRQTkZ5xLkLizN+/63IcMVnak4c7Otdnit7nH1nkBSH1/3WT1l0U2Fxa8Uo8S9NnvVcyBZi2F7gQfUA/qqy+Dhk62IAcSZvGZx1LlleYrW/haPy52MaPlyKdqqJN5/9yWLVAgiVwZcNx0SNGv1m4H/OuPFtTtbOB7910C6aNkpbNQWUpXi7GTAlQLPIWz6itnMKfM2gKpU3J2LvoVvR7UKXFaENMwgdM82AXmU61b4phrd0KxlrRhnnhuHZqOxSGqgu74AX+srlr1+S44Dj+Hzo63feFOEH7jISYXWod3cBVOWQW8=
   file: jirahours
+  skip_cleanup: true
   on:
     tags: true
     repo: rayburgemeestre/jirahours
