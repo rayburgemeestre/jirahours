@@ -1,0 +1,12 @@
+language: go
+
+go:
+- "1.11.x"
+- master
+
+provider: releases
+	api_key: "7b200c8ff6439758acd77cf833a1f06931b64470"
+	file: "jirahours"
+	skip_cleanup: true
+	on:
+		tags: true

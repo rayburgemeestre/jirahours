@@ -1,5 +1,8 @@
 SHELL:=/bin/bash
 
+default:
+	make clean && make build && make test
+
 prepare:
 	if ! [[ $$(which go) ]]; then \
 		echo Go not found, please make sure that go is installed and in the \$$PATH; \
