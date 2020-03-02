@@ -21,7 +21,7 @@ test:
 	go test
 
 format:
-	go test
+	go fmt
 
 install:
 	cp -prv jirahours /usr/local/bin/ || \

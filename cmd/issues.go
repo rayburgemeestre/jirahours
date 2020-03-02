@@ -6,17 +6,18 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/rayburgemeestre/jirahours/util"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-	"gopkg.in/src-d/go-git.v4"
-	"gopkg.in/src-d/go-git.v4/plumbing/object"
 	"os"
 	"regexp"
 	"sort"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/rayburgemeestre/jirahours/util"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"gopkg.in/src-d/go-git.v4"
+	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
 
 type Entry struct {
