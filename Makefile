@@ -22,6 +22,7 @@ test:
 
 format:
 	go fmt
+	(cd cmd ; go fmt)
 
 install:
 	cp -prv jirahours /usr/local/bin/ || \

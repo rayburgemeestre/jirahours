@@ -18,28 +18,27 @@ import (
 )
 
 var (
-	outputWorklogs string
+	undoWorklogs string
 )
 
 func init() {
-	syncbackCmd.Flags().StringVarP(&dates, "file", "f", "dates.txt", "file to read dates from (e.g. dates.txt)")
-	syncbackCmd.Flags().StringVarP(&outputWorklogs, "out", "o", "existing_tempo_hours.txt", "file to write existing worklog hours to (e.g. existing_tempo_hours.txt)")
-	rootCmd.AddCommand(syncbackCmd)
+	undoCmd.Flags().StringVarP(&dates, "file", "f", "dates.txt", "file to read dates from (e.g. dates.txt)")
+	undoCmd.Flags().StringVarP(&undoWorklogs, "delete", "o", "undo_worklogs.sh", "file to write undo worklog hours script to (e.g. undo_worklogs.sh)")
+	rootCmd.AddCommand(undoCmd)
 }
 
-var syncbackCmd = &cobra.Command{
-	Use:   "syncback",
-	Short: "Sync back already existing worklogs for given date range from Jira Tempo hours",
-	Long:  `This data can be used to submit "around" these existing log entries (like Meetings you logged manually)`,
+// HACK: this undo cmd is a copy & paste from syncback, and should be refactored to get rid of the huge code duplication.
+var undoCmd = &cobra.Command{
+	Use:   "undo",
+	Short: "Generate undo script for all worklog entries in given date range from Jira Tempo hours",
+	Long:  `This script can be manually checked before executing and is generally useful if you somehow screwed up automated submission of worklog hours`,
 	Run: func(cmd *cobra.Command, args []string) {
 		min, max := util.GetMinMaxDatefile(dates)
 		username := viper.GetString("jira_credentials.username")
 		password := viper.GetString("jira_credentials.password")
 		url := fmt.Sprintf(viper.GetString("jira_worklog_api.list"), min.UnixNano()/1000000)
-
-		f, err := os.Create(outputWorklogs)
+		f, err := os.Create(undoWorklogs)
 		util.CheckIfError(err)
-
 		for url != "" {
 			fmt.Println("Gathering data from URL:", url)
 
@@ -114,20 +113,21 @@ var syncbackCmd = &cobra.Command{
 			for _, item := range dat2 {
 				authordat := item["author"].(map[string]interface{})
 				author := authordat["name"].(string)
+				what := item["comment"].(string)
+				issueId := item["issueId"].(string)
+				worklogId := item["id"].(string)
 				when := item["started"].(string)
 				whentime, err := time.Parse("2006-01-02", when[0:10])
-				util.CheckIfError(err)
 				if min.Before(whentime) && max.After(whentime) {
 					// date within range
 				} else {
 					continue // skip
 				}
-				what := item["comment"].(string)
-				timeSpentSeconds := item["timeSpentSeconds"].(float64)
 				if author != username {
 					continue
 				}
-				_, err = f.WriteString(fmt.Sprintln(when, "***", author, "***", timeSpentSeconds, "***", what))
+				fmt.Println(item)
+				_, err = f.WriteString(fmt.Sprintf("jirahours delete -i %s -w %s # %s\n", issueId, worklogId, what))
 				util.CheckIfError(err)
 			}
 		}
