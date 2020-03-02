@@ -22,6 +22,7 @@ jira_credentials:
     username: <YOUR USERNAME>
     password: <YOUR PASSWORD>
 jira_worklog_api:
-  issue: https://<YOUR JIRA>/rest/api/latest/issue/%s/worklog
-  list: https://<YOUR JIRA>/rest/api/2/worklog/updated?since=%d
-  detail: https://<YOUR JIRA>/rest/api/2/worklog/list
+  delete_worklog: https://jira.brightcomputing.com:8443/rest/api/2/issue/%s/worklog/%s
+  detail: https://jira.brightcomputing.com:8443/rest/api/2/worklog/list
+  issue: https://jira.brightcomputing.com:8443/rest/api/latest/issue/%s/worklog
+  list: https://jira.brightcomputing.com:8443/rest/api/2/worklog/updated?since=%d
